@@ -4,7 +4,7 @@
     <h1>Model: {{car.model}}</h1>
     <img class="img-fluid" :src="car.imgUrl" alt />
     <p>Price: {{car.price}}</p>
-    <p>Year: {{car.productionYear}}</p>
+    <p>Year: {{car.Year}}</p>
     <p>{{car.body}}</p>
     <div class="form-group">
       <label for="bid">Bid Amount:</label>

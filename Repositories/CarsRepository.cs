@@ -18,11 +18,11 @@ namespace fullstack_gregslist.Repositories
         internal Car Create(Car newCar)
         {
             string sql = @"
-        INSERT INTO cars
-        (make, model, userId, productionYear, price, body, imgUrl)
-        VALUES
-        (@Make, @Model, @UserId, @ProductionYear, @Price, @Body, @ImgUrl);
-        SELECT LAST_INSERT_ID()";
+            INSERT INTO cars
+            (make, model, userId, year, price, body, imgUrl)
+            VALUES
+            (@Make, @Model, @UserId, @Year, @Price, @Body, @ImgUrl);
+            SELECT LAST_INSERT_ID()";
             newCar.Id = _db.ExecuteScalar<int>(sql, newCar);
             return newCar;
         }
@@ -58,8 +58,7 @@ namespace fullstack_gregslist.Repositories
             UPDATE cars
             SET
             price = @Price
-            WHERE id = @Id
-          ";
+            WHERE id = @Id";
             int affectedRows = _db.Execute(sql, carToBidOn);
             return affectedRows == 1;
         }
@@ -70,12 +69,12 @@ namespace fullstack_gregslist.Repositories
             string sql = @"
             UPDATE cars
             SET
-            price = @Price,
-            make = @Make,
-            model = @Model,
-            imgUrl = @ImgUrl,
-            productionYear = @ProductionYear,
-            body = @Body
+                price = @Price,
+                make = @Make,
+                model = @Model,
+                imgUrl = @ImgUrl,
+                year = @Year,
+                body = @Body
             WHERE id = @Id
             AND userId = @UserId";
             int affectedRows = _db.Execute(sql, carToUpdate);

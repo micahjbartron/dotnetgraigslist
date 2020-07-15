@@ -28,7 +28,7 @@
           name="year"
           class="form-control"
           placeholder="Enter year...."
-          v-model="newCar.productionYear"
+          v-model="newCar.Year"
         />
       </div>
       <div class="form-group">
@@ -100,7 +100,7 @@ export default {
   },
   methods: {
     createCar() {
-      this.newCar.productionYear = +this.newCar.productionYear;
+      this.newCar.year = +this.newCar.year;
       this.newCar.price = +this.newCar.price;
       this.$store.dispatch("createCar", this.newCar);
     }

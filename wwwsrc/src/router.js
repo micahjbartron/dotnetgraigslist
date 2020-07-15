@@ -1,13 +1,13 @@
 import Vue from "vue";
 import Router from "vue-router";
 // @ts-ignore
-import Home from "./views/Home.vue";
+import Home from "./pages/Home.vue";
 // @ts-ignore
-import Dashboard from "./views/Dashboard.vue";
+import Dashboard from "./pages/Dashboard.vue";
 // @ts-ignore
-import Car from "./views/Car.vue"
+import Car from "./pages/Car.vue"
 // @ts-ignore
-import MyCar from "./views/MyCars.vue"
+import MyCar from "./pages/MyCars.vue"
 import { authGuard } from "@bcwdev/auth0-vue";
 
 Vue.use(Router);
