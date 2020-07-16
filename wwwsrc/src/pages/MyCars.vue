@@ -1,30 +1,28 @@
 <template>
   <div class="my-cars row justify-content-center">
-    <div class="col-4 border rounded" v-for="car in cars" :key="car.id">
-      <h1>{{car.make}}</h1>
-      <h1>{{car.model}}</h1>
-    </div>
+    <car class="col-4 border rounded" v-for="car in cars" :key="car.id" :carData="car" />
   </div>
 </template>
 
 
 <script>
+import Car from "@/components/Car"
 export default {
   name: "my-cars",
   data() {
     return {};
   },
   mounted() {
-    this.$store.dispatch("getMyCars");
+    this.$store.dispatch("getMyFavoriteCars");
   },
   computed: {
     cars() {
       //   return this.$store.state.myCars;
-      return this.$store.state.cars;
+      return this.$store.state.myFavoriteCars;
     }
   },
   methods: {},
-  components: {}
+  components: { Car }
 };
 </script>
 

@@ -21,6 +21,10 @@ namespace fullstack_gregslist.Services
 
         internal DTOCarFavorite Create(DTOCarFavorite fav)
         {
+            if (_repo.hasRelationship(fav))
+            {
+                throw new Exception("you already have that fav");
+            }
             return _repo.Create(fav);
         }
         private DTOCarFavorite GetById(int id)

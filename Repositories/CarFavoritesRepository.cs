@@ -32,6 +32,14 @@ namespace fullstack_gregslist.Repositories
 
             return _db.Query<ViewModelCarFavorite>(sql, new { user });
         }
+
+        internal bool hasRelationship(DTOCarFavorite fav)
+        {
+            string sql = "SELECT * FROM carfavorites WHERE carId = @CarId AND user = @User";
+            var found = _db.QueryFirstOrDefault<DTOCarFavorite>(sql, fav);
+            return found != null;
+        }
+
         internal DTOCarFavorite Create(DTOCarFavorite fav)
         {
             string sql = @"

@@ -9,16 +9,20 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     cars: [],
-    // myCars: [],
+    myCars: [],
+    myFavoriteCars: [],
     activeCar: {}
   },
   mutations: {
     setCars(state, cars) {
       state.cars = cars
     },
-    // setMyCars(state, cars) {
-    //   state.myCars = cars
-    // },
+    setMyCars(state, cars) {
+      state.myCars = cars
+    },
+    setMyFavoriteCars(state, cars) {
+      state.myFavoriteCars = cars
+    },
     setCar(state, car) {
       state.activeCar = car
     }
@@ -36,8 +40,11 @@ export default new Vuex.Store({
     },
     async getMyCars({ commit }) {
       let res = await api.get("/cars/user")
-      // commit("setMyCars", res.data)
-      commit("setCars", res.data)
+      commit("setMyCars", res.data)
+    },
+    async getMyFavoriteCars({ commit }) {
+      let res = await api.get("/carFavorites")
+      commit("setMyFavoriteCars", res.data)
     },
     async getCar({ commit }, carId) {
       try {
@@ -51,6 +58,7 @@ export default new Vuex.Store({
     async createCar({ commit, dispatch }, newCar) {
       let res = await api.post("cars", newCar)
       dispatch("getCars")
+      dispatch("getMyCars")
     },
     async deleteCar({ dispatch }, carId) {
       try {
@@ -66,9 +74,28 @@ export default new Vuex.Store({
         let res = await api.put("cars/" + payload.id, payload)
         commit("setCar", res.data)
       } catch (err) {
+        console.error(err)
+      }
+    },
+    //#endregion
 
+    async addFav({ dispatch }, fav) {
+      try {
+        let res = await api.post("/carFavorites", fav)
+        dispatch("getMyFavoriteCars")
+      } catch (err) {
+        console.error(err)
+      }
+    },
+    async removeFav({ dispatch }, favId) {
+      try {
+        let res = await api.delete("/carFavorites/" + favId)
+        dispatch("getMyFavoriteCars")
+      } catch (err) {
+        console.error(err)
       }
     }
-    //#endregion
+
+
   }
 });

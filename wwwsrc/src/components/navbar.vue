@@ -29,7 +29,7 @@
           :class="{ active: $route.name == 'mycars'}"
           v-if="$auth.isAuthenticated"
         >
-          <router-link :to="{name: 'mycars'}" class="nav-link">My Cars</router-link>
+          <router-link :to="{name: 'mycars'}" class="nav-link">My Favorite Cars</router-link>
         </li>
       </ul>
       <span class="navbar-text">
