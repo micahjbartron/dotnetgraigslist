@@ -14,6 +14,23 @@ namespace fullstack_gregslist.Repositories
         {
             _db = db;
         }
+        internal IEnumerable<Car> GetCarsByUserId(string userId)
+        {
+            string sql = "SELECT * FROM cars WHERE userId = @userId";
+            return _db.Query<Car>(sql, new { userId });
+        }
+
+        internal Car GetById(int id)
+        {
+            string sql = "SELECT * FROM cars WHERE id = @id";
+            return _db.QueryFirstOrDefault<Car>(sql, new { id });
+        }
+
+        internal IEnumerable<Car> GetAll()
+        {
+            string sql = "SELECT * FROM cars";
+            return _db.Query<Car>(sql);
+        }
 
         internal Car Create(Car newCar)
         {
@@ -25,31 +42,6 @@ namespace fullstack_gregslist.Repositories
             SELECT LAST_INSERT_ID()";
             newCar.Id = _db.ExecuteScalar<int>(sql, newCar);
             return newCar;
-        }
-
-        internal IEnumerable<Car> GetCarsByUserId(string userId)
-        {
-            string sql = "SELECT * FROM cars WHERE userId = @UserId";
-            return _db.Query<Car>(sql, new { userId });
-        }
-
-        internal Car GetById(int id)
-        {
-            string sql = "SELECT * FROM cars WHERE id = @Id";
-            return _db.QueryFirstOrDefault<Car>(sql, new { id });
-        }
-
-        internal IEnumerable<Car> GetAll()
-        {
-            string sql = "SELECT * FROM cars";
-            return _db.Query<Car>(sql);
-        }
-
-        internal bool Delete(int id, string userId)
-        {
-            string sql = "DELETE FROM cars WHERE id = @Id AND userId = @UserId LIMIT 1";
-            int affectedRows = _db.Execute(sql, new { id, userId });
-            return affectedRows == 1;
         }
 
         internal bool BidOnCar(Car carToBidOn)
@@ -78,6 +70,13 @@ namespace fullstack_gregslist.Repositories
             WHERE id = @Id
             AND userId = @UserId";
             int affectedRows = _db.Execute(sql, carToUpdate);
+            return affectedRows == 1;
+        }
+
+        internal bool Delete(int id, string userId)
+        {
+            string sql = "DELETE FROM cars WHERE id = @id AND userId = @userId LIMIT 1";
+            int affectedRows = _db.Execute(sql, new { id, userId });
             return affectedRows == 1;
         }
     }

@@ -1,16 +1,16 @@
 <template>
   <div class="dashboard">
     <h1>WELCOME TO THE DASHBOARD</h1>
-    <cars></cars>
+    <car-form></car-form>
   </div>
 </template>
 
 <script>
-import Cars from "../components/Cars.vue";
+import CarForm from "../components/CarForm.vue";
 export default {
-  mounted() {},
+  mounted() { },
   computed: {},
-  components: { Cars }
+  components: { CarForm }
 };
 </script>
 

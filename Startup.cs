@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using fullstack_gregslist.Controllers;
 using fullstack_gregslist.Repositories;
+using fullstack_gregslist.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,74 +19,81 @@ using MySql.Data.MySqlClient;
 
 namespace fullstack_gregslist
 {
-  public class Startup
-  {
-    public Startup(IConfiguration configuration)
+    public class Startup
     {
-      Configuration = configuration;
-    }
-
-    public IConfiguration Configuration { get; }
-
-    // This method gets called by the runtime. Use this method to add services to the container.
-    public void ConfigureServices(IServiceCollection services)
-    {
-      services.AddAuthentication(options =>
-      {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-      }).AddJwtBearer(options =>
-      {
-        options.Authority = $"https://{Configuration["Auth0:Domain"]}/";
-        options.Audience = Configuration["Auth0:Audience"];
-      });
-      services.AddCors(options =>
-      {
-        options.AddPolicy("CorsDevPolicy", builder =>
+        public Startup(IConfiguration configuration)
         {
-          builder
-          .WithOrigins(new string[]{
-                "http://localhost:8080", "http://localhost:8081"
-          })
-          .AllowAnyMethod()
-          .AllowAnyHeader()
-          .AllowCredentials();
-        });
-      });
+            Configuration = configuration;
+        }
 
-      services.AddControllers();
-      services.AddScoped<IDbConnection>(x => CreateDbConnection());
-      services.AddTransient<CarsService>();
-      services.AddTransient<CarsRepository>();
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = $"https://{Configuration["Auth0:Domain"]}/";
+                options.Audience = Configuration["Auth0:Audience"];
+            });
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsDevPolicy", builder =>
+            {
+                builder
+              .WithOrigins(new string[]{
+                    "http://localhost:8080", "http://localhost:8081"
+                  })
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+            });
+            });
+
+            services.AddControllers();
+            services.AddScoped<IDbConnection>(x => CreateDbConnection());
+            services.AddTransient<CarsService>();
+            services.AddTransient<CarsRepository>();
+            services.AddTransient<CarFavoritesService>();
+            services.AddTransient<CarFavoritesRepository>();
+
+        }
+
+        private IDbConnection CreateDbConnection()
+        {
+            string connectionString = Configuration["db:gearhost"];
+            return new MySqlConnection(connectionString);
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseCors("CorsDevPolicy");
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
     }
-
-    private IDbConnection CreateDbConnection()
-    {
-      string connectionString = Configuration["db:gearhost"];
-      return new MySqlConnection(connectionString);
-    }
-
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-      if (env.IsDevelopment())
-      {
-        app.UseDeveloperExceptionPage();
-        app.UseCors("CorsDevPolicy");
-      }
-
-      app.UseHttpsRedirection();
-
-      app.UseRouting();
-      app.UseAuthentication();
-
-      app.UseAuthorization();
-
-      app.UseEndpoints(endpoints =>
-      {
-        endpoints.MapControllers();
-      });
-    }
-  }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using fullstack_gregslist.Models;
+using fullstack_gregslist.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,10 +26,25 @@ namespace fullstack_gregslist.Controllers
             {
                 return Ok(_cs.GetAll());
             }
-            catch (System.Exception)
+            catch (System.Exception err)
             {
+                return BadRequest(err.Message);
+            }
+        }
 
-                throw;
+        //NOTE path does not follow standards https://localhost:5001/api/cars/user
+        [HttpGet("user")]
+        [Authorize]
+        public ActionResult<IEnumerable<Car>> GetCarsByUser()
+        {
+            try
+            {
+                string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                return Ok(_cs.GetByUserId(userId));
+            }
+            catch (System.Exception err)
+            {
+                return BadRequest(err.Message);
             }
         }
 
@@ -46,60 +62,13 @@ namespace fullstack_gregslist.Controllers
             }
         }
 
-        //NOTE path does not follow standards https://localhost:5001/api/cars/user
-        [Authorize]
-        [HttpGet("user")]
-        public ActionResult<IEnumerable<Car>> GetCarsByUser()
-        {
-            try
-            {
-                Claim user = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-                if (user == null)
-                {
-                    throw new Exception("You must be logged in to get your cars!.");
-                }
-                string userId = user.Value;
-                return Ok(_cs.GetByUserId(userId));
-            }
-            catch (System.Exception err)
-            {
-                return BadRequest(err.Message);
-            }
-        }
-
-        [Authorize]
-        [HttpPut("{id}")]
-        public ActionResult<Car> Edit(int id, [FromBody] Car carToUpdate)
-        {
-            try
-            {
-                carToUpdate.Id = id;
-                Claim user = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-                if (user == null)
-                {
-                    throw new Exception("must be logged in");
-                }
-                string userId = user.Value;
-                return Ok(_cs.Edit(carToUpdate, userId));
-            }
-            catch (System.Exception err)
-            {
-                return BadRequest(err.Message);
-            }
-        }
-
-        [Authorize]
         [HttpPost]
+        [Authorize]
         public ActionResult<Car> Create([FromBody] Car newCar)
         {
             try
             {
-                Claim user = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-                if (user == null)
-                {
-                    throw new Exception("Must be logged in to create.");
-                }
-                newCar.UserId = user.Value;
+                newCar.UserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 return Ok(_cs.Create(newCar));
             }
             catch (System.Exception err)
@@ -108,23 +77,36 @@ namespace fullstack_gregslist.Controllers
             }
         }
 
+        [HttpPut("{id}")]
         [Authorize]
+        public ActionResult<Car> Edit(int id, [FromBody] Car carToUpdate)
+        {
+            try
+            {
+                carToUpdate.Id = id;
+                string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                return Ok(_cs.Edit(carToUpdate, userId));
+            }
+            catch (System.Exception err)
+            {
+                return BadRequest(err.Message);
+            }
+        }
+
+
+
         [HttpDelete("{id}")]
+        [Authorize]
         public ActionResult<string> Delete(int id)
         {
             try
             {
-                Claim user = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-                if (user == null)
-                {
-                    throw new Exception("you must be logged in to delete");
-                }
-                string userId = user.Value;
+                string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 return Ok(_cs.Delete(id, userId));
             }
-            catch (System.Exception error)
+            catch (System.Exception err)
             {
-                return BadRequest(error.Message);
+                return BadRequest(err.Message);
             }
         }
 

@@ -2,18 +2,9 @@ import Vue from "vue";
 import Vuex from "vuex";
 import Axios from "axios";
 import router from "../router";
+import { api } from "./AxiosService";
 
 Vue.use(Vuex);
-
-let baseUrl = location.host.includes("localhost")
-  ? "https://localhost:5001/"
-  : "/";
-
-let api = Axios.create({
-  baseURL: baseUrl + "api/",
-  timeout: 3000,
-  withCredentials: true
-});
 
 export default new Vuex.Store({
   state: {
@@ -33,16 +24,8 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    setBearer({ }, bearer) {
-      api.defaults.headers.authorization = bearer;
-    },
-    resetBearer() {
-      api.defaults.headers.authorization = "";
-    },
-    async createCar({ commit, dispatch }, newCar) {
-      let res = await api.post("cars", newCar)
-      dispatch("getCars")
-    },
+    //#region CARS
+
     async getCars({ commit, dispatch }) {
       try {
         let res = await api.get("cars")
@@ -65,6 +48,10 @@ export default new Vuex.Store({
 
       }
     },
+    async createCar({ commit, dispatch }, newCar) {
+      let res = await api.post("cars", newCar)
+      dispatch("getCars")
+    },
     async deleteCar({ dispatch }, carId) {
       try {
         await api.delete("cars/" + carId)
@@ -82,6 +69,6 @@ export default new Vuex.Store({
 
       }
     }
-
+    //#endregion
   }
 });

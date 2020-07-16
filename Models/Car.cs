@@ -20,4 +20,9 @@ namespace fullstack_gregslist.Models
         [Required]
         public string Body { get; set; }
     }
+
+    public class ViewModelCarFavorite : Car
+    {
+        public int FavoriteId { get; set; }
+    }
 }

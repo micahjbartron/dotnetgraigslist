@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using fullstack_gregslist.Models;
 using fullstack_gregslist.Repositories;
 
-namespace fullstack_gregslist.Controllers
+namespace fullstack_gregslist.Services
 {
     public class CarsService
     {
@@ -12,11 +12,6 @@ namespace fullstack_gregslist.Controllers
         public CarsService(CarsRepository repo)
         {
             _repo = repo;
-        }
-
-        internal Car Create(Car newCar)
-        {
-            return _repo.Create(newCar);
         }
 
         internal IEnumerable<Car> GetAll()
@@ -39,6 +34,31 @@ namespace fullstack_gregslist.Controllers
             return foundCar;
         }
 
+        internal Car Create(Car newCar)
+        {
+            return _repo.Create(newCar);
+        }
+
+        internal Car Edit(Car carToUpdate, string userId)
+        {
+            Car foundCar = GetById(carToUpdate.Id);
+            // NOTE Check if not the owner, and price is increasing
+            if (foundCar.UserId != userId && foundCar.Price < carToUpdate.Price)
+            {
+                if (_repo.BidOnCar(carToUpdate))
+                {
+                    foundCar.Price = carToUpdate.Price;
+                    return foundCar;
+                }
+                throw new Exception("Could not bid on that car");
+            }
+            if (foundCar.UserId == userId && _repo.Edit(carToUpdate, userId))
+            {
+                return carToUpdate;
+            }
+            throw new Exception("You cant edit that, it is not yo car!");
+        }
+
         internal string Delete(int id, string userId)
         {
             Car foundCar = GetById(id);
@@ -51,25 +71,6 @@ namespace fullstack_gregslist.Controllers
                 return "Sucessfully delorted.";
             }
             throw new Exception("Somethin bad happened");
-        }
-
-        internal Car Edit(Car carToUpdate, string userId)
-        {
-            Car foundCar = GetById(carToUpdate.Id);
-            if (foundCar.UserId != userId && foundCar.Price < carToUpdate.Price)
-            {
-                if (_repo.BidOnCar(carToUpdate))
-                {
-                    foundCar.Price = carToUpdate.Price;
-                    return foundCar;
-                }
-                throw new Exception("Could not bid on that car");
-            }
-            if (_repo.Edit(carToUpdate, userId))
-            {
-                return carToUpdate;
-            }
-            throw new Exception("You cant edit that, it is not yo car!");
         }
     }
 }

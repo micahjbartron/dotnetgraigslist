@@ -1,6 +1,6 @@
 <template>
-  <div class="Cars">
-    <form @submit.prevent="createCar()">
+  <div class="car-form">
+    <form @submit.prevent="createCar">
       <div class="form-group">
         <label for="make">Make</label>
         <input
@@ -28,7 +28,7 @@
           name="year"
           class="form-control"
           placeholder="Enter year...."
-          v-model="newCar.Year"
+          v-model.number="newCar.year"
         />
       </div>
       <div class="form-group">
@@ -38,7 +38,7 @@
           name="price"
           class="form-control"
           placeholder="Enter price...."
-          v-model="newCar.price"
+          v-model.number="newCar.price"
         />
       </div>
       <div class="form-group">
@@ -63,28 +63,13 @@
       </div>
       <button type="submit" class="btn btn-primary">Add Car</button>
     </form>
-    <div class="row justify-content-center">
-      <div
-        class="col-3 m-3 border rounded"
-        v-for="car in cars"
-        :key="car.id"
-        @click="$router.push({name: 'car', params: {carId: car.id}})"
-      >
-        <h1>{{car.make}}</h1>
-        <h2>{{car.model}}</h2>
-        <img :src="car.imgUrl" class="img-fluid" alt srcset />
-        <h2>{{car.price}}</h2>
-        <h2>{{car.year}}</h2>
-        <h2>{{car.body}}</h2>
-      </div>
-    </div>
   </div>
 </template>
 
 
 <script>
 export default {
-  name: "Cars",
+  name: "CarForm",
   data() {
     return {
       newCar: {}
@@ -100,8 +85,6 @@ export default {
   },
   methods: {
     createCar() {
-      this.newCar.year = +this.newCar.year;
-      this.newCar.price = +this.newCar.price;
       this.$store.dispatch("createCar", this.newCar);
     }
   },
