@@ -46,14 +46,14 @@ namespace fullstack_gregslist
       {
         options.AddPolicy("CorsDevPolicy", builder =>
           {
-        builder
-            .WithOrigins(new string[]{
-                    "http://localhost:8080", "http://localhost:8081"
-            })
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
-      });
+            builder
+                .WithOrigins(new string[]{
+                    "http://localhost:8080", "http://localhost:8081", "http://localhost:8081"
+                })
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+          });
       });
 
       services.AddControllers();

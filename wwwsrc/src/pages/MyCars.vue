@@ -6,7 +6,7 @@
 
 
 <script>
-import Car from "@/components/Car"
+import Car from "@/components/Car";
 export default {
   name: "my-cars",
   data() {
