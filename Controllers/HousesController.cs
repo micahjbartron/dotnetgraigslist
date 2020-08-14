@@ -62,8 +62,42 @@ namespace fullstack_gregslist.Controllers
     {
       try
       {
-
+        newHouse.UserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        return Ok(_hs.Creat(newHouse));
       }
-  }
+      catch (System.Exception err)
+      {
+        return BadRequest(err.Message);
+      }
+    }
+    [HttpPut("{Id}")]
+    [Authorize]
+    public ActionResult<House> Edit(int id [FromBody] House houseToUpdate)
+    {
+      try
+      {
+        houseToUpdate.Id = id;
+        string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        return Ok(_hs.edit(houseToUpdate, userId));
+      }
+      catch (System.Exception err)
+      {
+        return BadRequest(err.Message);
+      }
+    }
+    [HttpDelete("{Id}")]
+    [Authorize]
+    public ActionResult<House> Delete(int id)
+    {
+      try
+      {
+        string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        return Ok(_hs.delete(id, userId));
+      }
+      catch (System.Exception err)
+      {
+        return BadRequest(err.Message);
+      }
+    }
   }
 }
