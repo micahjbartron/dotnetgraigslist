@@ -72,7 +72,7 @@ namespace fullstack_gregslist.Controllers
     }
     [HttpPut("{Id}")]
     [Authorize]
-    public ActionResult<House> Edit(int id [FromBody] House houseToUpdate)
+    public ActionResult<House> Edit(int id, [FromBody] House houseToUpdate)
     {
       try
       {

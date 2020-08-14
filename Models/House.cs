@@ -13,7 +13,7 @@ namespace fullstack_gregslist.Models
     [Required]
     public string Description { get; set; }
     [Required]
-    public int Bathrooms { get; set }
+    public int Bathrooms { get; set; }
     [Required]
     public int Year { get; set; }
     [Required]
@@ -22,7 +22,7 @@ namespace fullstack_gregslist.Models
     public int Bedrooms { get; set; }
 
   }
-  public class ViewModelHouseFavorites : house
+  public class ViewModelHouseFavorites : House
   {
     public int FavoriteId { get; set; }
   }
