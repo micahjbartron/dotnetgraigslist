@@ -60,7 +60,16 @@ namespace fullstack_gregslist
 
     internal object delete(int id, string userId)
     {
-      throw new NotImplementedException();
+      House foundHouse = GetByHouseId(id);
+      if (foundHouse.UserId != userId)
+      {
+        throw new Exception("this is not your house");
+      }
+      if (_repo.Delete(id, userId))
+      {
+        return "sucessfully deleted";
+      }
+      throw new Exception("the things are not working");
     }
   }
 }

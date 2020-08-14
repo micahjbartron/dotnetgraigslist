@@ -28,22 +28,57 @@ namespace fullstack_gregslist.Repositories
 
     internal House GetByHouseId(int id)
     {
-      throw new NotImplementedException();
+      string sql = "SELECT * FROM houses id = @id";
+      return _db.QueryFirstOrDefault<House>(sql, new { id });
     }
 
     internal House Creat(House newHouse)
     {
-      throw new NotImplementedException();
+      string sql = @"
+      INSERT INTO houses
+      (price, userId, description, barthrooms, year, squareFeet, bedrooms, imgUrl)
+      VALUES
+      (@Price, @UserId, @Description, @Bathrooms, @year, @SquareFeet, @Bedrooms, @ImgUrl);
+      SELECT LAST_INSERT_ID()";
+      newHouse.Id = _db.ExecuteScalar<int>(sql, newHouse);
+      return newHouse;
     }
 
-    internal bool BidOnHouse(House houseToUpdate)
+    internal bool BidOnHouse(House houseToBidOn)
     {
-      throw new NotImplementedException();
+      string sql = @"
+      UPDATE houses
+      SET
+      price = @Price
+      WHERE id = @Id";
+      int affectedRows = _db.Execute(sql, houseToBidOn);
+      return affectedRows == 1;
     }
 
     internal bool edit(House houseToUpdate, string userId)
     {
-      throw new NotImplementedException();
+      houseToUpdate.UserId = userId;
+      string sql = @"
+      UPDATE houses
+      SET
+          price = @Price,
+          description = @Description,
+          bathrooms = @Bathrooms,
+          year = @Year,
+          squareFeet = @SquareFeet,
+          bathrooms = @Bathrooms,
+          imgUrl = @ImgUrl
+      WHERE id = @Id
+      AND userId = @UserId";
+      int affectedRows = _db.Execute(sql, houseToUpdate);
+      return affectedRows == 1;
+    }
+
+    internal bool Delete(int id, string userId)
+    {
+      string sql = "DELETE FROM houses WHERE id = @Id AND userId = @UserId LIMIT 1";
+      int affectedRows = _db.Execute(sql, new { id, userId });
+      return affectedRows == 1;
     }
   }
 }

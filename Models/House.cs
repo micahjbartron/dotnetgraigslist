@@ -20,6 +20,7 @@ namespace fullstack_gregslist.Models
     public int SquareFeet { get; set; }
     [Required]
     public int Bedrooms { get; set; }
+    public string ImgUrl { get; set; }
 
   }
   public class ViewModelHouseFavorites : House
