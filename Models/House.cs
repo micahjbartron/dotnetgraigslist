@@ -23,7 +23,7 @@ namespace fullstack_gregslist.Models
     public string ImgUrl { get; set; }
 
   }
-  public class ViewModelHouseFavorites : House
+  public class ViewModelHouseFavorite : House
   {
     public int FavoriteId { get; set; }
   }
